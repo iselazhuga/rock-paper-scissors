@@ -1,62 +1,62 @@
-## Metodologjia e Mbledhjes së të Dhënave
+## Data Collection Methodology
 
-### Përzgjedhja e Variablave
+### Variable Selection
 
-Fillimisht konsideruam shumë variacione të mundshme, por përfshirja e të gjithave do të krijonte shumë skenarë dhe do të kërkonte një sasi të pamenaxhueshme imazhesh. Prandaj, u fokusuam në tre variabla kryesore që kanë ndikim të drejtpërdrejtë në atë që modeli mund të mësojë:
+Initially, we considered many possible variations, but including all of them would have created too many scenarios and required an unmanageable number of images. Therefore, we focused on three main variables that have a direct impact on what the model can learn:
 
-* **Gjinia:** djalë / vajzë
-* **Ana e dorës:** përpara / mbrapa
-* **Këndi:** drejt / majtas / djathtas
+* **Gender:** boy / girl
+* **Hand side:** front / back
+* **Angle:** head-on / angled left / angled right
 
-Kjo krijon gjithsej **2 × 2 × 3 = 12 skenarë**.
+This gives us a total of **2 × 2 × 3 = 12 scenarios**.
 
-Variablat e tjera u hoqën sepse mbivendoseshin me variablat e përzgjedhura, ndikoheshin natyrshëm nga kushte të tjera, ose kërkonin shumë të dhëna shtesë.
+The other variables were removed because they overlapped with the selected variables, were naturally affected by other conditions, or would have required too much additional data.
 
-| Variabla e hequr    | Arsyeja                                                                                                          |
-| ------------------- | ---------------------------------------------------------------------------------------------------------------- |
-| Madhësia e dorës    | Ka pak ndryshim real me vetëm dy kontribues; distanca nga kamera ndikon gjithashtu në madhësinë e dorës në foto. |
-| Ngjyra e sfondit    | Mund të ndryshojë natyrshëm gjatë mbledhjes së të dhënave.                                                       |
-| Kontrasti           | Ndikohet kryesisht nga ndriçimi dhe sfondi.                                                                      |
-| Pozicioni/kompozimi | Lidhet me distancën dhe pozicionimin e dorës.                                                                    |
-| Modeli i kamerës    | Do të shtonte shumë kombinime pa përfitim të qartë.                                                              |
-| Ora e ditës         | Ndikon kryesisht te ndriçimi.                                                                                    |
-| Dhoma               | Ndikon kryesisht te sfondi dhe ndriçimi.                                                                         |
+| **Removed variable** | **Reason**                                                                                                           |
+| -------------------- | -------------------------------------------------------------------------------------------------------------------- |
+| Hand size            | Limited real variation with only two contributors; camera distance also affects the apparent hand size in the image. |
+| Background color     | Can naturally vary during data collection.                                                                           |
+| Contrast             | Mainly affected by lighting and background.                                                                          |
+| Position/composition | Related to camera distance and hand positioning.                                                                     |
+| Camera model         | Would add many combinations without a clear benefit.                                                                 |
+| Time of day          | Mainly affects lighting.                                                                                             |
+| Room                 | Mainly affects background and lighting.                                                                              |
 
-### Zgjerimi Artificial i të Dhënave (Augmentimi)
+### Artificial Data Augmentation
 
-Për të reduktuar punën manuale, fotot origjinale u morën vetëm me **dorën e djathtë**. Më pas përdorëm **horizontal flip** për të krijuar shembuj të dorës së majtë.
+To reduce manual work, the original photos were taken using only the **right hand**. We then used a **horizontal flip** to create left-hand examples.
 
-Përdorëm gjithashtu rrotullime artificiale prej **90°, 180° dhe 270°** për të krijuar shembuj shtesë.
+We also used artificial rotations of **90°, 180°, and 270°** to create additional examples.
 
-Nga **216 imazhe origjinale**, u krijuan rreth **1,728 imazhe** pas këtyre transformimeve.
+Starting from **216 original images**, approximately **1,728 images** were created after these transformations.
 
-Ndryshe nga *flip*-i horizontal, rrotullimet artificiale mund të krijojnë pozicione që nuk përfaqësojnë mënyrën tipike se si një dorë mbahet përpara kamerës. Prandaj, ndikimi i tyre u testua në vend që të supozohej se do të përmirësonte modelin.
+Unlike the horizontal flip, artificial rotations can create positions that do not represent how a hand would typically be held in front of a camera. Therefore, their impact was tested rather than assumed to improve the model.
 
-### Krahasimi i të Dhënave
+### Data Comparison
 
-Trajnuam dhe krahasuam dy modele:
+We trained and compared two models:
 
-1. **Vetëm me imazhet reale** — 216
-2. **Me imazhet reale + të augmentuara** — 1,728
+1. **Real images only** — 216
+2. **Real + augmented images** — 1,728
 
-Në këtë mënyrë mundëm të vlerësonim nëse augmentimi përmirëson apo dëmton performancën e modelit.
+This allowed us to evaluate whether augmentation improves or reduces the model's performance.
 
-Modeli përfundimtar do të zgjidhet bazuar në performancën e tij në një **set testimi të veçuar**, i cili nuk është përdorur gjatë trajnimit. Kjo është më e rëndësishme sesa performanca vetëm në të dhënat e trajnimit, pasi një rezultat shumë i lartë në trajnim mund të tregojë **overfitting**.
+The final model will be selected based on its performance on a **separate test set** that was not used during training. This is more important than performance on the training data alone, since very high training performance can be a sign of **overfitting**.
 
-### Testimi dhe Përmirësimi
+### Testing and Improvement
 
-Pas trajnimit, modeli u testua me imazhe të reja. Analizuam gabimet dhe, kur identifikuam një problem të caktuar, shtuam imazhe specifike për ta adresuar.
+After training, the model was tested with new images. We analyzed its errors and, when we identified a specific problem, added targeted images to address it.
 
-Për shembull, nëse modeli ngatërron **gërshërët me gurin**, mund të shtojmë më shumë imazhe të gërshërëve me gishtat më të hapur.
+For example, if the model confuses **scissors with rock**, we can add more scissors images with the fingers spread further apart.
 
-**Cikli:** Mbledhje → Augmentim → Trajnim → Testim → Përmirësim → Ri-trajnim
+**Cycle:** Collect → Augment → Train → Test → Improve → Retrain
 
-### Rezultatet pas Testimit
+### Results After Testing
 
-*Do të plotësohet pas përfundimit të Step 6.*
+*To be completed after Step 6.*
 
-* **Çfarë vërejtëm:** ...
-* **Problemi:** ...
-* **Ndryshimi:** ...
-* **Rezultati:** ...
-* **Reale vs. Reale + Augmentuar — cili performoi më mirë:** ...
+* **What we observed:** ...
+* **Problem identified:** ...
+* **Change made:** ...
+* **Result:** ...
+* **Real vs. Real + Augmented — which performed better:** ...
