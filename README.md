@@ -1,30 +1,62 @@
-## Data Collection Methodology
+## Metodologjia e Mbledhjes së të Dhënave
 
-### Narrowing the variables
+### Përzgjedhja e Variablave
 
-We initially considered 21 variation categories (hand size, background color, camera type, time of day, framing, contrast, etc.), but this would have produced far more scenarios than we could realistically capture. We narrowed it down to the ones with the most direct impact:
+Fillimisht konsideruam shumë variacione të mundshme, por përfshirja e të gjithave do të krijonte shumë skenarë dhe do të kërkonte një sasi të pamenaxhueshme imazhesh. Prandaj, u fokusuam në tre variabla kryesore që kanë ndikim të drejtpërdrejtë në atë që modeli mund të mësojë:
 
-| Category dropped | Reason |
-|---|---|
-| Contrast | Emerges naturally from lighting and background — added no new information |
-| Frame composition | Overlaps with camera distance |
-| Background color | Already covered by background type (clean/cluttered) |
-| Hand size | No real variation with only two contributors; replaced with camera distance, which we can control on purpose |
-| Frame position | The model (transfer learning, MobileNet) is robust to this; gesture shape and angle matter far more |
-| Camera model, time of day, room | Absorbed by background and lighting; controlling separately needed more time than we had |
+* **Gjinia:** djalë / vajzë
+* **Ana e dorës:** përpara / mbrapa
+* **Këndi:** drejt / majtas / djathtas
 
-**Kept:** hand identity, front/back, angle, distance, lighting, background type, and finger positioning per gesture.
+Kjo krijon gjithsej **2 × 2 × 3 = 12 skenarë**.
 
-### Saving work — with a limit
+Variablat e tjera u hoqën sepse mbivendoseshin me variablat e përzgjedhura, ndikoheshin natyrshëm nga kushte të tjera, ose kërkonin shumë të dhëna shtesë.
 
-We photographed only the right hand and generated left-hand examples via horizontal flip, since a mirrored photo of a right hand looks exactly like a left hand making the same gesture.
+| Variabla e hequr    | Arsyeja                                                                                                          |
+| ------------------- | ---------------------------------------------------------------------------------------------------------------- |
+| Madhësia e dorës    | Ka pak ndryshim real me vetëm dy kontribues; distanca nga kamera ndikon gjithashtu në madhësinë e dorës në foto. |
+| Ngjyra e sfondit    | Mund të ndryshojë natyrshëm gjatë mbledhjes së të dhënave.                                                       |
+| Kontrasti           | Ndikohet kryesisht nga ndriçimi dhe sfondi.                                                                      |
+| Pozicioni/kompozimi | Lidhet me distancën dhe pozicionimin e dorës.                                                                    |
+| Modeli i kamerës    | Do të shtonte shumë kombinime pa përfitim të qartë.                                                              |
+| Ora e ditës         | Ndikon kryesisht te ndriçimi.                                                                                    |
+| Dhoma               | Ndikon kryesisht te sfondi dhe ndriçimi.                                                                         |
 
-We decided against artificial 90°/180°/270° rotation to multiply angle coverage: a hand held normally is never seen rotated like that by a real camera. Training on such images risked hurting the model during the swap test, not helping it.
+### Zgjerimi Artificial i të Dhënave (Augmentimi)
 
-### After self-testing
+Për të reduktuar punën manuale, fotot origjinale u morën vetëm me **dorën e djathtë**. Më pas përdorëm **horizontal flip** për të krijuar shembuj të dorës së majtë.
 
-*(Fill in after Step 6)*
+Përdorëm gjithashtu rrotullime artificiale prej **90°, 180° dhe 270°** për të krijuar shembuj shtesë.
 
-- Noticed: ...
-- Change made: ...
-- Example: "Scissors was confused with rock when fingers were close together, so we added N more images with a wider spread."
+Nga **216 imazhe origjinale**, u krijuan rreth **1,728 imazhe** pas këtyre transformimeve.
+
+Ndryshe nga *flip*-i horizontal, rrotullimet artificiale mund të krijojnë pozicione që nuk përfaqësojnë mënyrën tipike se si një dorë mbahet përpara kamerës. Prandaj, ndikimi i tyre u testua në vend që të supozohej se do të përmirësonte modelin.
+
+### Krahasimi i të Dhënave
+
+Trajnuam dhe krahasuam dy modele:
+
+1. **Vetëm me imazhet reale** — 216
+2. **Me imazhet reale + të augmentuara** — 1,728
+
+Në këtë mënyrë mundëm të vlerësonim nëse augmentimi përmirëson apo dëmton performancën e modelit.
+
+Modeli përfundimtar do të zgjidhet bazuar në performancën e tij në një **set testimi të veçuar**, i cili nuk është përdorur gjatë trajnimit. Kjo është më e rëndësishme sesa performanca vetëm në të dhënat e trajnimit, pasi një rezultat shumë i lartë në trajnim mund të tregojë **overfitting**.
+
+### Testimi dhe Përmirësimi
+
+Pas trajnimit, modeli u testua me imazhe të reja. Analizuam gabimet dhe, kur identifikuam një problem të caktuar, shtuam imazhe specifike për ta adresuar.
+
+Për shembull, nëse modeli ngatërron **gërshërët me gurin**, mund të shtojmë më shumë imazhe të gërshërëve me gishtat më të hapur.
+
+**Cikli:** Mbledhje → Augmentim → Trajnim → Testim → Përmirësim → Ri-trajnim
+
+### Rezultatet pas Testimit
+
+*Do të plotësohet pas përfundimit të Step 6.*
+
+* **Çfarë vërejtëm:** ...
+* **Problemi:** ...
+* **Ndryshimi:** ...
+* **Rezultati:** ...
+* **Reale vs. Reale + Augmentuar — cili performoi më mirë:** ...
