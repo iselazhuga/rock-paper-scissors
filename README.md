@@ -2,61 +2,92 @@
 
 ### Variable Selection
 
-Initially, we considered many possible variations, but including all of them would have created too many scenarios and required an unmanageable number of images. Therefore, we focused on three main variables that have a direct impact on what the model can learn:
+At the beginning of the project, we considered several possible variations for the images. However, including all of them would have created too many combinations and required an impractical number of images.
+
+Therefore, we selected three main variables that we considered relevant to the visual information available to the model:
 
 * **Gender:** boy / girl
 * **Hand side:** front / back
 * **Angle:** head-on / angled left / angled right
 
-This gives us a total of **2 × 2 × 3 = 12 scenarios**.
+This results in a total of:
 
-The other variables were removed because they overlapped with the selected variables, were naturally affected by other conditions, or would have required too much additional data.
+**2 × 2 × 3 = 12 scenarios**
 
-| **Removed variable** | **Reason**                                                                                                           |
-| -------------------- | -------------------------------------------------------------------------------------------------------------------- |
-| Hand size            | Limited real variation with only two contributors; camera distance also affects the apparent hand size in the image. |
-| Background color     | Can naturally vary during data collection.                                                                           |
-| Contrast             | Mainly affected by lighting and background.                                                                          |
-| Position/composition | Related to camera distance and hand positioning.                                                                     |
-| Camera model         | Would add many combinations without a clear benefit.                                                                 |
-| Time of day          | Mainly affects lighting.                                                                                             |
-| Room                 | Mainly affects background and lighting.                                                                              |
+### Why did we include gender?
 
-### Artificial Data Augmentation
+The distinction between **boy and girl** was included as a practical source of visual variation, rather than as a demographic category itself.
 
-To reduce manual work, the original photos were taken using only the **right hand**. We then used a **horizontal flip** to create left-hand examples.
+Visible characteristics of the hands can differ between individuals, such as **nail polish, nail length, or other hand-related features**. These characteristics can affect the pixels in an image and could potentially influence what the model learns.
 
-We also used artificial rotations of **90°, 180°, and 270°** to create additional examples.
+By including both boys and girls, we wanted to introduce this type of visual variation and reduce the possibility that the model learns features such as painted or longer nails instead of focusing on the actual **Rock, Paper, Scissors gesture**.
 
-Starting from **216 original images**, approximately **1,728 images** were created after these transformations.
+### Removed Variables
 
-Unlike the horizontal flip, artificial rotations can create positions that do not represent how a hand would typically be held in front of a camera. Therefore, their impact was tested rather than assumed to improve the model.
+Several other variables were considered but were not included in the final scenario design. They were removed because they overlapped with the selected variables, could naturally change during data collection, or would have created too many additional combinations.
 
-### Data Comparison
+| Removed variable       | Reason                                                                                             |
+| ---------------------- | -------------------------------------------------------------------------------------------------- |
+| Hand size              | Limited real variation with only two contributors; camera distance also affects apparent hand size |
+| Background color       | Can naturally vary during data collection                                                          |
+| Contrast               | Mainly influenced by lighting and background                                                       |
+| Position / composition | Related to camera distance and hand positioning                                                    |
+| Camera model           | Would add many combinations without a clear benefit                                                |
+| Time of day            | Mainly affects lighting                                                                            |
+| Room                   | Mainly affects background and lighting                                                             |
+
+## Artificial Data Augmentation
+
+To reduce manual data collection, the original photographs were taken using only the **right hand**.
+
+We then used **horizontal flipping** to create left-hand examples.
+
+We also applied artificial rotations of:
+
+* **90°**
+* **180°**
+* **270°**
+
+Starting from **216 original images**, approximately **1,728 images** were obtained after applying these transformations.
+
+However, artificial rotations may create hand positions that are not representative of how a person would normally hold their hand in front of a camera. Therefore, we did not assume that rotations would automatically improve the model. Their effect was evaluated through model comparison.
+
+## Data Comparison
 
 We trained and compared two models:
 
-1. **Real images only** — 216
-2. **Real + augmented images** — 1,728
+1. **Real images only:** 216 images
+2. **Real + augmented images:** approximately 1,728 images
 
-This allowed us to evaluate whether augmentation improves or reduces the model's performance.
+The purpose of this comparison was to determine whether artificial data augmentation improved or reduced model performance.
 
-The final model will be selected based on its performance on a **separate test set** that was not used during training. This is more important than performance on the training data alone, since very high training performance can be a sign of **overfitting**.
+The final model was selected based on its performance on a **separate test set** that was not used during training.
 
-### Testing and Improvement
+This is important because high performance on the training data alone does not necessarily mean that the model will perform well on new images. A model can perform very well on training data while still being **overfitted**.
 
-After training, the model was tested with new images. We analyzed its errors and, when we identified a specific problem, added targeted images to address it.
+## Testing and Improvement
 
-For example, if the model confuses **scissors with rock**, we can add more scissors images with the fingers spread further apart.
+After training, the models were tested using new images that were not part of the training data.
 
-**Cycle:** Collect → Augment → Train → Test → Improve → Retrain
+We analyzed the model's predictions and identified cases where it confused one gesture with another.
 
-### Results After Testing
+When a specific problem was identified, we added targeted images designed to address that problem and then retrained the model.
 
-*To be completed after Step 6.*
+For example, if the model frequently confused **Scissors** with **Rock**, we could add more Scissors images where the fingers are more clearly separated.
+
+This created an iterative improvement process:
+
+**Collect → Augment → Train → Test → Improve → Retrain**
+
+## Results After Testing
+
+This section will be completed after the final testing stage.
 
 * **What we observed:** ...
 * **Problem identified:** ...
 * **Change made:** ...
 * **Result:** ...
-* **Real vs. Real + Augmented — which performed better:** ...
+* **Real vs. Real + Augmented:** ...
+* **Which model performed better:** ...
+* **Nail-variation hypothesis:** [Yes/No]
+* **Explanation:** Did the swap test show any confusion pattern related specifically to nail polish or nail length?
