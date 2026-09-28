@@ -1,100 +1,240 @@
-## Data Collection Methodology
+# Rock, Paper, Scissors — Project 1
+
+**Holberton School · Build with AI Summer Program**
+
+An image classifier built with **Teachable Machine** that recognises three hand gestures: **rock, paper, and scissors**.
+
+The main goal of the project was not only to build a classifier, but also to investigate **what the model actually learns** and whether it relies on the hand gesture or on other visual features such as backgrounds, lighting, or the person.
+
+---
+
+## 1. Data Statement
+
+### What we collected
+
+Photographs of hands showing three gestures:
+
+* Rock
+* Paper
+* Scissors
+
+### Whose data?
+
+* **Our own photographs:** Two of the three group members contributed hand photographs. The third member participated in planning, training, and evaluation but chose not to be photographed.
+* **Kaggle dataset:** A public Rock, Paper, Scissors hand dataset with white backgrounds, used under its published licence.
+* **Webcam images:** Additional images collected by our group using a webcam and cluttered backgrounds.
+
+### Storage and publication
+
+The project repository is public on GitHub. Our raw personal training photographs remain private within the group. Only the exported model, screenshots, and results are published.
+
+The contributing members agreed to the use of their photographs. The published material contains only hand gestures, with no faces or other identifying information.
+
+---
+
+## 2. Data Collection Methodology
 
 ### Variable Selection
 
-At the beginning of the project, we considered several possible variations for the images. However, including all of them would have created too many combinations and required an impractical number of images.
+We considered many possible variations, but using all of them would have created too many combinations.
 
-Therefore, we selected three main variables that we considered relevant to the visual information available to the model:
+We selected three main variables:
 
 * **Gender:** boy / girl
 * **Hand side:** front / back
 * **Angle:** head-on / angled left / angled right
 
-This results in a total of:
+This produced:
 
 **2 × 2 × 3 = 12 scenarios**
 
-### Why did we include gender?
+For each scenario, we collected:
 
-The distinction between **boy and girl** was included as a practical source of visual variation, rather than as a demographic category itself.
+* 6 Rock images
+* 6 Paper images
+* 6 Scissors images
 
-Visible characteristics of the hands can differ between individuals, such as **nail polish, nail length, or other hand-related features**. These characteristics can affect the pixels in an image and could potentially influence what the model learns.
+Therefore:
 
-By including both boys and girls, we wanted to introduce this type of visual variation and reduce the possibility that the model learns features such as painted or longer nails instead of focusing on the actual **Rock, Paper, Scissors gesture**.
+**12 × 18 = 216 original images**
+
+This gives **72 original images per gesture**.
+
+### Why include gender?
+
+Gender was not used as a prediction target. It was included as a practical source of visual variation.
+
+Hands can differ in features such as **nail polish and nail length**, which affect the pixels in an image. Including both a boy and a girl helped introduce additional visual variation and reduce the chance of the model relying on a single person's hand characteristics.
 
 ### Removed Variables
 
-Several other variables were considered but were not included in the final scenario design. They were removed because they overlapped with the selected variables, could naturally change during data collection, or would have created too many additional combinations.
+| Variable               | Reason for removal                                                                                 |
+| ---------------------- | -------------------------------------------------------------------------------------------------- |
+| Hand size              | Limited real variation with only two contributors; camera distance also changes apparent hand size |
+| Background colour      | Changes naturally with the environment                                                             |
+| Contrast               | Mainly affected by lighting and background                                                         |
+| Position / composition | Related to camera distance and hand positioning                                                    |
+| Camera model           | Would create many additional combinations without a clear benefit                                  |
+| Time of day            | Mainly affects lighting                                                                            |
+| Room                   | Mainly affects background and lighting                                                             |
 
-| Removed variable       | Reason                                                                                              |
-| ---------------------- | --------------------------------------------------------------------------------------------------- |
-| Hand size              | Limited real variation with only two contributors; camera distance also affects apparent hand size |
-| Background color       | Can naturally vary during data collection                                                           |
-| Contrast               | Mainly influenced by lighting and background                                                        |
-| Position / composition | Related to camera distance and hand positioning                                                     |
-| Camera model           | Would add many combinations without a clear benefit                                                 |
-| Time of day            | Mainly affects lighting                                                                             |
-| Room                   | Mainly affects background and lighting                                                              |
+---
 
-## Artificial Data Augmentation
+## 3. Artificial Data Augmentation
 
-To reduce manual data collection, the original photographs were taken using only the **right hand**.
+We originally photographed only the **right hand**.
 
-We then used **horizontal flipping** to create left-hand examples.
+To create additional examples, we used:
 
-We also applied artificial rotations of:
+* **Horizontal flipping** to create left-hand-like examples
+* **90°, 180°, and 270° rotations**
 
-* **90°**
-* **180°**
-* **270°**
+For each gesture:
 
-Starting from **216 original images**, approximately **1,728 images** were obtained after applying these transformations.
+**72 original images → 144 with flipping → 576 with rotations**
 
-However, artificial rotations may create hand positions that are not representative of how a person would normally hold their hand in front of a camera. Therefore, we did not assume that rotations would automatically improve the model. Their effect was evaluated through model comparison.
+Overall:
 
-## Model Directory Descriptions
+**216 → approximately 1,728 images**
 
-Each directory corresponds to a model we trained using **Google Teachable Machine**.
+We did not assume that rotations would automatically improve the model. Some rotated images may represent hand positions that would not normally appear in front of a camera, so we treated rotation as an experiment and compared the resulting models.
 
-### Models trained in stage 1
+---
 
-* **RPS Kaggle only** — contains images from the Kaggle dataset with a white background. The dataset originally contained **5,784 images**, but around **1,200 Rock images** were removed because the samples were not good. Additional Rock samples were collected using the webcam to help balance the classes.
+## 4. Models Trained
 
-* **RPS Joined** — contains our collected images together with their flipped versions, with **144 images per gesture**, including the flipped images.
+### Stage 1
 
-* **RPS Joined - Kaggle** — contains our collected images and the Kaggle dataset, together with the corresponding flipped versions.
+We trained five different models using different combinations of our images, the Kaggle dataset, and artificial augmentation.
 
-* **RPS Joined Artificial** — contains our collected images with artificial rotations in all directions and flipped versions, resulting in **576 images per gesture**.
+| Model                              | Data                                                                                                                            |
+| ---------------------------------- | ------------------------------------------------------------------------------------------------------------------------------- |
+| **RPS Kaggle only**                | Kaggle dataset with white backgrounds. Around 1,200 poor Rock samples were removed, and Rock was rebalanced with webcam images. |
+| **RPS Joined**                     | Our images + horizontal flipping                                                                                                |
+| **RPS Joined - Kaggle**            | Our images + Kaggle images + horizontal flipping                                                                                |
+| **RPS Joined Artificial**          | Our images + horizontal flipping + rotations                                                                                    |
+| **RPS Joined Artificial - Kaggle** | Our images + horizontal flipping + rotations + Kaggle images                                                                    |
 
-* **RPS Joined Artificial - Kaggle** — contains our collected images with artificial rotations in all directions and flipped versions, together with the Kaggle dataset.
+We compared all five models using Teachable Machine's live preview.
 
-We trained all of the above models and tested them using the **live preview in Teachable Machine**. The **RPS Joined Artificial - Kaggle** model performed best overall, especially in scenarios with a white background.
+**RPS Joined Artificial - Kaggle** performed best during the initial comparison, especially on white backgrounds.
 
-However, all of the models showed weaker performance when tested with **messy backgrounds**. Because of this, we decided to collect additional webcam images so that the model could generalize better to different cameras and less controlled environments.
+However, all five models struggled with **cluttered backgrounds**.
 
-### Models trained in stage 2
+This suggested that the models were not generalising well beyond the visual conditions represented in the training data.
 
-* **RPS Joined Artificial - Kaggle - Webcam** — contains our collected images with artificial rotations in all directions and flipped versions, the Kaggle dataset, and additional webcam images collected to improve accuracy in different messy-background scenarios.
+---
 
-The final model contained around **2,850 images per gesture**, for a total of around **8,400 images**.
+## 5. Stage 2 — Final Model
 
-We trained the model using Teachable Machine's default setting of **50 epochs** to avoid potential overfitting.
+To improve performance on different environments, we added webcam images taken against **cluttered and varied backgrounds**.
 
-## Data Quality and Improvement
+Our final model was:
 
-At first, we did not notice the bad samples present in the Kaggle dataset. After identifying and removing these samples, the model performed much better, especially in **messy background scenarios**.
+**RPS Joined Artificial - Kaggle - Webcam**
 
-This led to an iterative improvement process where we first trained several models with different combinations of real, augmented, Kaggle, and webcam data, tested their performance using the Teachable Machine live preview, and then added or removed data based on the observed weaknesses.
+The final dataset contained:
 
-The overall process was:
+| Class     |    Images |
+| --------- | --------: |
+| Paper     |     2,898 |
+| Rock      |     2,851 |
+| Scissors  |     2,864 |
+| **Total** | **8,613** |
 
-**Collect → Augment → Combine → Train → Test → Improve → Retrain**
+### Training settings
 
-## Results After Testing
+* **Epochs:** 50
+* **Batch size:** 16
+* **Learning rate:** 0.001
 
-The model comparison showed that adding artificial augmentation and the Kaggle dataset improved performance in controlled **white-background** scenarios, with **RPS Joined Artificial - Kaggle** performing best among the stage 1 models.
+---
 
-The main weakness identified during testing was performance in **messy backgrounds**. To address this, webcam images were added in stage 2 to increase variation in backgrounds and camera conditions.
+## 6. Results
 
-Removing the poor-quality Kaggle samples also produced a noticeable improvement, particularly in messy-background scenarios.
+### Internal Teachable Machine Test
+
+Teachable Machine held out approximately 15% of the images for testing.
+
+|                     | Predicted Paper | Predicted Rock | Predicted Scissors |
+| ------------------- | --------------: | -------------: | -----------------: |
+| **Actual Paper**    |             434 |              0 |                  1 |
+| **Actual Rock**     |               0 |            428 |                  0 |
+| **Actual Scissors** |               0 |              1 |                429 |
+
+The model correctly classified:
+
+**1,291 out of 1,293 images = approximately 99.8% accuracy**
+
+### Why we do not treat 99.8% as the final result
+
+Most of our dataset contains flipped or rotated versions of the same original photographs.
+
+Therefore, very similar images may appear in both the training and test sets. This creates a risk of **data leakage**, meaning the test set may not represent truly unseen examples.
+
+For this reason, the internal 99.8% accuracy should not be interpreted as the model's real-world performance.
+
+The more meaningful evaluation is the **swap test using new hands and images that the model has never seen**.
+
+---
+
+## 7. Confusion Matrix
+
+The confusion matrix shows which gestures the model classified correctly and which ones it confused.
+
+In the internal test, the model made only two mistakes:
+
+* One **Paper** image was predicted as **Scissors**
+* One **Scissors** image was predicted as **Rock**
+
+These mistakes are visually understandable because some Paper and Scissors poses can have similar outlines, while certain Scissors poses can resemble a closed hand.
+
+---
+
+## 8. What Did the Model Actually Learn?
+
+This was one of the main questions of our project.
+
+Our Stage 1 models performed well on **plain white backgrounds** but struggled with **cluttered backgrounds**.
+
+This suggests that the models may have learned some background-related features instead of relying only on the hand gesture. The Kaggle dataset, in particular, contained predominantly white backgrounds.
+
+To address this, we added webcam images with cluttered backgrounds in Stage 2.
+
+However, we have not yet directly tested whether the model relies on a specific person's hand or on nail characteristics.
+
+The internal 99.8% accuracy cannot answer these questions because of the risk of data leakage.
+
+The swap test is therefore important for evaluating how well the model actually generalises to new hands and environments.
+
+---
+
+## 9. Limitations and Next Steps
+
+### Limitations
+
+* Only two group members contributed personal hand photographs.
+* The internal test may contain images very similar to training images.
+* The model may still rely on background or person-specific visual features.
+* Nail-related variation was not tested separately.
+
+### Next Steps
+
+* Create a clean train/test split **before augmentation**.
+* Evaluate models using a completely separate test set.
+* Collect images from more people and different hands.
+* Test the effect of nail polish and nail length separately.
+* Compare performance across different backgrounds and cameras.
+
+---
+
+## 10. Key Takeaway
+
+This project showed us that building an image classifier is not only about achieving a high accuracy score.
+
+The more important question is:
+
+> **What did the model actually learn?**
+
+Through data collection, augmentation, model comparison, testing, and error analysis, we learned that **the quality and diversity of the data are just as important as the model itself**.
 
