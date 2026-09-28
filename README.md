@@ -1,3 +1,11 @@
+# Rock Paper Scissors - Machine Learning
+
+## Project Description
+
+This is the first project, part of our **Machine Learning course at Holberton School**. The goal is to build a computer vision model that can recognize **Rock, Paper, and Scissors hand gestures** from images and webcam input.
+
+We used **Google Teachable Machine** to train and compare several models using combinations of our own collected images, the Kaggle dataset, artificially augmented images, and additional webcam images. The project focuses on exploring how different types and amounts of training data affect the model's ability to recognize hand gestures, particularly in both controlled and messy-background environments.
+
 ## Data Collection Methodology
 
 ### Variable Selection
