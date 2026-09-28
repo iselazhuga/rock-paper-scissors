@@ -65,7 +65,7 @@ Each directory corresponds to a model we trained using **Google Teachable Machin
 
 ### Models trained in stage 1
 
-* ![**RPS Kaggle only**](https://www.kaggle.com/datasets/sanikamal/rock-paper-scissors-dataset?resource=download) — contains images from the Kaggle dataset with a white background. The dataset originally contained **5,784 images**, but around **1,200 Rock images** were removed because the samples were not good. Additional Rock samples were collected using the webcam to help balance the classes.
+* [**RPS Kaggle only**](https://www.kaggle.com/datasets/sanikamal/rock-paper-scissors-dataset?resource=download) — contains images from the Kaggle dataset with a white background. The dataset originally contained **5,784 images**, but around **1,200 Rock images** were removed because the samples were not good. Additional Rock samples were collected using the webcam to help balance the classes.
 
 * **RPS Joined** — contains our collected images together with their flipped versions, with **144 images per gesture**, including the flipped images.
 
