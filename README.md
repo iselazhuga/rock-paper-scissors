@@ -26,15 +26,15 @@ By including both boys and girls, we wanted to introduce this type of visual var
 
 Several other variables were considered but were not included in the final scenario design. They were removed because they overlapped with the selected variables, could naturally change during data collection, or would have created too many additional combinations.
 
-| Removed variable       | Reason                                                                                             |
-| ---------------------- | -------------------------------------------------------------------------------------------------- |
+| Removed variable       | Reason                                                                                              |
+| ---------------------- | --------------------------------------------------------------------------------------------------- |
 | Hand size              | Limited real variation with only two contributors; camera distance also affects apparent hand size |
-| Background color       | Can naturally vary during data collection                                                          |
-| Contrast               | Mainly influenced by lighting and background                                                       |
-| Position / composition | Related to camera distance and hand positioning                                                    |
-| Camera model           | Would add many combinations without a clear benefit                                                |
-| Time of day            | Mainly affects lighting                                                                            |
-| Room                   | Mainly affects background and lighting                                                             |
+| Background color       | Can naturally vary during data collection                                                           |
+| Contrast               | Mainly influenced by lighting and background                                                        |
+| Position / composition | Related to camera distance and hand positioning                                                     |
+| Camera model           | Would add many combinations without a clear benefit                                                 |
+| Time of day            | Mainly affects lighting                                                                             |
+| Room                   | Mainly affects background and lighting                                                              |
 
 ## Artificial Data Augmentation
 
@@ -52,42 +52,49 @@ Starting from **216 original images**, approximately **1,728 images** were obtai
 
 However, artificial rotations may create hand positions that are not representative of how a person would normally hold their hand in front of a camera. Therefore, we did not assume that rotations would automatically improve the model. Their effect was evaluated through model comparison.
 
-## Data Comparison
+## Model Directory Descriptions
 
-We trained and compared two models:
+Each directory corresponds to a model we trained using **Google Teachable Machine**.
 
-1. **Real images only:** 216 images
-2. **Real + augmented images:** approximately 1,728 images
+### Models trained in stage 1
 
-The purpose of this comparison was to determine whether artificial data augmentation improved or reduced model performance.
+* **RPS Kaggle only** — contains images from the Kaggle dataset with a white background. The dataset originally contained **5,784 images**, but around **1,200 Rock images** were removed because the samples were not good. Additional Rock samples were collected using the webcam to help balance the classes.
 
-The final model was selected based on its performance on a **separate test set** that was not used during training.
+* **RPS Joined** — contains our collected images together with their flipped versions, with **144 images per gesture**, including the flipped images.
 
-This is important because high performance on the training data alone does not necessarily mean that the model will perform well on new images. A model can perform very well on training data while still being **overfitted**.
+* **RPS Joined - Kaggle** — contains our collected images and the Kaggle dataset, together with the corresponding flipped versions.
 
-## Testing and Improvement
+* **RPS Joined Artificial** — contains our collected images with artificial rotations in all directions and flipped versions, resulting in **576 images per gesture**.
 
-After training, the models were tested using new images that were not part of the training data.
+* **RPS Joined Artificial - Kaggle** — contains our collected images with artificial rotations in all directions and flipped versions, together with the Kaggle dataset.
 
-We analyzed the model's predictions and identified cases where it confused one gesture with another.
+We trained all of the above models and tested them using the **live preview in Teachable Machine**. The **RPS Joined Artificial - Kaggle** model performed best overall, especially in scenarios with a white background.
 
-When a specific problem was identified, we added targeted images designed to address that problem and then retrained the model.
+However, all of the models showed weaker performance when tested with **messy backgrounds**. Because of this, we decided to collect additional webcam images so that the model could generalize better to different cameras and less controlled environments.
 
-For example, if the model frequently confused **Scissors** with **Rock**, we could add more Scissors images where the fingers are more clearly separated.
+### Models trained in stage 2
 
-This created an iterative improvement process:
+* **RPS Joined Artificial - Kaggle - Webcam** — contains our collected images with artificial rotations in all directions and flipped versions, the Kaggle dataset, and additional webcam images collected to improve accuracy in different messy-background scenarios.
 
-**Collect → Augment → Train → Test → Improve → Retrain**
+The final model contained around **2,850 images per gesture**, for a total of around **8,400 images**.
+
+We trained the model using Teachable Machine's default setting of **50 epochs** to avoid potential overfitting.
+
+## Data Quality and Improvement
+
+At first, we did not notice the bad samples present in the Kaggle dataset. After identifying and removing these samples, the model performed much better, especially in **messy background scenarios**.
+
+This led to an iterative improvement process where we first trained several models with different combinations of real, augmented, Kaggle, and webcam data, tested their performance using the Teachable Machine live preview, and then added or removed data based on the observed weaknesses.
+
+The overall process was:
+
+**Collect → Augment → Combine → Train → Test → Improve → Retrain**
 
 ## Results After Testing
 
-This section will be completed after the final testing stage.
+The model comparison showed that adding artificial augmentation and the Kaggle dataset improved performance in controlled **white-background** scenarios, with **RPS Joined Artificial - Kaggle** performing best among the stage 1 models.
 
-* **What we observed:** ...
-* **Problem identified:** ...
-* **Change made:** ...
-* **Result:** ...
-* **Real vs. Real + Augmented:** ...
-* **Which model performed better:** ...
-* **Nail-variation hypothesis:** [Yes/No]
-* **Explanation:** Did the swap test show any confusion pattern related specifically to nail polish or nail length?
+The main weakness identified during testing was performance in **messy backgrounds**. To address this, webcam images were added in stage 2 to increase variation in backgrounds and camera conditions.
+
+Removing the poor-quality Kaggle samples also produced a noticeable improvement, particularly in messy-background scenarios.
+
